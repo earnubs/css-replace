@@ -1,0 +1,20 @@
+/* this is a comment */
+.button, button {
+  border: 1p solid silver;
+}
+
+input[type=submit] {
+  border: 2px solid red;
+}
+
+button, input[type=submit] {
+  background: lime;
+}
+
+a {
+  color: blue;
+}
+
+table {
+  font-weight: bold;
+}

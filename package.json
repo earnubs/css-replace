@@ -1,0 +1,15 @@
+{
+  "name": "postcss-spelunking",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Stephen Stewart <stephen.stewart@canonical.com>",
+  "license": "ISC",
+  "dependencies": {
+    "postcss": "^6.0.14",
+    "postcss-selector-parser": "^3.1.1"
+  }
+}
