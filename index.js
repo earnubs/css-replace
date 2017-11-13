@@ -1,6 +1,10 @@
 #!/usr/bin/env node
 const argv = require('yargs')
-  .usage('Usage: $0 --from [type:value] --to [type:value]')
+  .usage('Usage: $0 --from type:value --to type:value')
+  .boolean('scss')
+  .alias('s', 'scss')
+  .describe('scss', 'Parse CSS as SCSS')
+  .boolean('w')
   .alias('w', 'write')
   .describe('w', 'Write changes to file')
   .demandOption(['from', 'to'])
