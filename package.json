@@ -6,6 +6,9 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
+  "bin": {
+    "css-replace": "./index.js"
+  },
   "author": "Stephen Stewart <stephen.stewart@canonical.com>",
   "license": "ISC",
   "dependencies": {

@@ -1,6 +1,8 @@
 #!/usr/bin/env node
 const argv = require('yargs')
   .usage('Usage: $0 --from [type:value] --to [type:value]')
+  .alias('w', 'write')
+  .describe('w', 'Write changes to file')
   .demandOption(['from', 'to'])
   .demandCommand(1)
   .argv;
@@ -17,19 +19,6 @@ const [toType, toValue] = argv.to ? splitOption(argv.to) : [];
 if (!fs.existsSync(source)) {
   log(`File at ${source} does not exist!`);
   process.exit(1);
-}
-
-function createReplacementNode(type, value) {
-  switch (type) {
-  case 'id':
-    return parser.id({value});
-  case 'tag':
-    return parser.tag({value});
-  case 'class':
-    return parser.className({value});
-  default:
-    return undefined;
-  }
 }
 
 const replacingNode = createReplacementNode(toType, toValue);
@@ -69,12 +58,32 @@ fs.readFile(source, (err, css) => {
   })])
     .process(css)
     .then((result) => {
-      log(result.css);
+      if (argv.w) {
+        fs.writeFile(source, result.css, (err) => {
+          if (err) throw err;
+          log(`Wrote changes to ${source}.`);
+        });
+      } else {
+        log(result.css);
+      }
     })
     .catch(error => {
-      log(error);
+      if (error) throw error;
     });
 });
+
+function createReplacementNode(type, value) {
+  switch (type) {
+  case 'id':
+    return parser.id({value});
+  case 'tag':
+    return parser.tag({value});
+  case 'class':
+    return parser.className({value});
+  default:
+    return undefined;
+  }
+}
 
 function splitOption(opt) {
   return opt.split(':');
