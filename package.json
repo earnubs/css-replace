@@ -1,7 +1,7 @@
 {
   "name": "postcss-spelunking",
   "version": "1.0.0",
-  "description": "",
+  "description": "Search and replace CSS selector nodes with PostCSS.",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -11,6 +11,10 @@
   },
   "author": "Stephen Stewart <stephen.stewart@canonical.com>",
   "license": "ISC",
+  "repository" : {
+    "type" : "git",
+    "url" : "https://github.com/earnubs/css-replace"
+  },
   "dependencies": {
     "chalk": "^2.3.0",
     "postcss": "^6.0.14",
