@@ -1,34 +1,81 @@
+#!/usr/bin/env node
+const argv = require('yargs')
+  .usage('Usage: $0 --from [type:value] --to [type:value]')
+  .demandOption(['from', 'to'])
+  .demandCommand(1)
+  .argv;
 const fs = require('fs');
-const postcss = require('postcss');
+const log = console.log; // eslint-disable-line no-console
 const parser = require('postcss-selector-parser');
+const path = require('path');
+const postcss = require('postcss');
 const processor = parser();
+const source = path.resolve(argv._[0]);
+const [fromType, fromValue] = argv.from ? splitOption(argv.from) : [];
+const [toType, toValue] = argv.to ? splitOption(argv.to) : [];
 
-const SOURCE = 'source.css';
-const RESULT = 'result.css';
+if (!fs.existsSync(source)) {
+  log(`File at ${source} does not exist!`);
+  process.exit(1);
+}
 
-const cleaner = postcss.plugin('postcss-cleaner', () => {
-  return (root, result) => {
-    // we want to grab all the selectors, then parse then and search for things
-    // ie. select from css where type = tag and value = button
-    processor.ast(root.nodes[1].selector).then((res) => {
-      res.walkTags((s) => {
-        console.log(s);
-      })
+function createReplacementNode(type, value) {
+  switch (type) {
+  case 'id':
+    return parser.id({value});
+  case 'tag':
+    return parser.tag({value});
+  case 'class':
+    return parser.className({value});
+  default:
+    return undefined;
+  }
+}
+
+const replacingNode = createReplacementNode(toType, toValue);
+
+const processRule = (rule, type, value, replacingNode) => {
+  const ast = processor.astSync(rule, {lossless: true, updateSelector: true});
+
+  ast.walk(node => {
+    if (node.type === type && node.value === value) {
+      node.replaceWith(replacingNode);
+    }
+  });
+
+  return ast.toString();
+};
+
+const search = postcss.plugin('postcss-search-and-replace', (options) => {
+
+  const {
+    fromType,
+    fromValue,
+    replacingNode,
+  } = options || {};
+
+  return (root) => {
+    root.walkRules(rule => {
+      rule.selector = processRule(rule, fromType, fromValue, replacingNode);
     });
-    /**
-      processor.processSync(root.nodes[1].selector)
-    ));
-     **/
-    result.root = postcss.root();
   };
 });
 
-fs.readFile(SOURCE, (err, css) => {
-  postcss([cleaner])
-    .process(css, { from: SOURCE, to: RESULT })
-    .then(result => {
-      fs.writeFile(RESULT, result.css, (err) => {
-        if (err) throw err;
-      });
+fs.readFile(source, (err, css) => {
+  postcss([search({
+    fromType,
+    fromValue,
+    replacingNode
+  })])
+    .process(css)
+    .then((result) => {
+      log(result.css);
+    })
+    .catch(error => {
+      log(error);
     });
 });
+
+function splitOption(opt) {
+  return opt.split(':');
+}

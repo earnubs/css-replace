@@ -1,5 +1,5 @@
 /* this is a comment */
-.button, button {
+.button, button, button, button:hover {
   border: 1p solid silver;
 }
 
@@ -17,4 +17,14 @@ a {
 
 table {
   font-weight: bold;
+}
+
+button + button {
+  margin-left: 1em;
+}
+
+@supports (display: flex) {
+  div {
+    display: flex;
+  }
 }
