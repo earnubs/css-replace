@@ -11,6 +11,7 @@ const log = console.log; // eslint-disable-line no-console
 const parser = require('postcss-selector-parser');
 const path = require('path');
 const postcss = require('postcss');
+const syntax = require('postcss-scss');
 const processor = parser();
 const source = path.resolve(argv._[0]);
 const [fromType, fromValue] = argv.from ? splitOption(argv.from) : [];
@@ -57,7 +58,7 @@ if (replacingNode) {
       fromValue,
       replacingNode
     })])
-      .process(css)
+      .process(css, { parser: syntax })
       .then((result) => {
         if (argv.w) {
           fs.writeFile(source, result.css, (err) => {
