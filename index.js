@@ -51,6 +51,12 @@ const search = postcss.plugin('postcss-search-and-replace', (options) => {
   };
 });
 
+let processOptions = {};
+
+if (argv.scss) {
+  processOptions = { parser: syntax };
+}
+
 if (replacingNode) {
   fs.readFile(source, (err, css) => {
     postcss([search({
@@ -58,7 +64,7 @@ if (replacingNode) {
       fromValue,
       replacingNode
     })])
-      .process(css, { parser: syntax })
+      .process(css, processOptions)
       .then((result) => {
         if (argv.w) {
           fs.writeFile(source, result.css, (err) => {
