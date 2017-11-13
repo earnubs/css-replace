@@ -1,2 +1,7 @@
-# postcss-spelunking
-Playing around with Postcss and large CSS codebases
+# css-replace 
+
+```
+Usage: index.js --from [type:value] --to [type:value]
+```
+
+Types are `id`, `tag` and `class`.

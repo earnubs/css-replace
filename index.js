@@ -50,27 +50,29 @@ const search = postcss.plugin('postcss-search-and-replace', (options) => {
   };
 });
 
-fs.readFile(source, (err, css) => {
-  postcss([search({
-    fromType,
-    fromValue,
-    replacingNode
-  })])
-    .process(css)
-    .then((result) => {
-      if (argv.w) {
-        fs.writeFile(source, result.css, (err) => {
-          if (err) throw err;
-          log(`Wrote changes to ${source}.`);
-        });
-      } else {
-        log(result.css);
-      }
-    })
-    .catch(error => {
-      if (error) throw error;
-    });
-});
+if (replacingNode) {
+  fs.readFile(source, (err, css) => {
+    postcss([search({
+      fromType,
+      fromValue,
+      replacingNode
+    })])
+      .process(css)
+      .then((result) => {
+        if (argv.w) {
+          fs.writeFile(source, result.css, (err) => {
+            if (err) throw err;
+            log(`Wrote changes to ${source}.`);
+          });
+        } else {
+          log(result.css);
+        }
+      })
+      .catch(error => {
+        if (error) throw error;
+      });
+  });
+}
 
 function createReplacementNode(type, value) {
   switch (type) {
