@@ -1,5 +1,5 @@
 {
-  "name": "postcss-spelunking",
+  "name": "css-replace",
   "version": "1.0.0",
   "description": "Search and replace CSS selector nodes with PostCSS.",
   "main": "index.js",
