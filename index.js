@@ -16,6 +16,7 @@ const argv = require('yargs')
   .demandCommand(1)
   .argv;
 const fs = require('fs');
+const chalk = require('chalk');
 const log = console.log; // eslint-disable-line no-console
 const parser = require('postcss-selector-parser');
 const path = require('path');
