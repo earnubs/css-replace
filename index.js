@@ -1,13 +1,18 @@
 #!/usr/bin/env node
 const argv = require('yargs')
-  .usage('Usage: $0 --from type:value --to type:value')
+  .usage('Usage: $0 --from type:value --to type:value <file>')
+  .describe('from', '"type:value" - type can be one of id, class, tag')
+  .describe('to', '"type:value" - type can be one of id, class, tag')
+  .demandOption(['from', 'to'])
+  .boolean('remove')
+  .alias('R', 'remove')
+  .describe('remove', 'Remove --from selector rather than replace')
   .boolean('scss')
   .alias('s', 'scss')
   .describe('scss', 'Parse CSS as SCSS')
   .boolean('w')
   .alias('w', 'write')
-  .describe('w', 'Write changes to file')
-  .demandOption(['from', 'to'])
+  .describe('w', 'Write changes')
   .demandCommand(1)
   .argv;
 const fs = require('fs');
@@ -33,7 +38,11 @@ const processRule = (rule, type, value, replacingNode) => {
 
   ast.walk(node => {
     if (node.type === type && node.value === value) {
-      node.replaceWith(replacingNode);
+      if (argv.remove) {
+        node.remove();
+      } else {
+        node.replaceWith(replacingNode);
+      }
     }
   });
 
@@ -73,7 +82,7 @@ if (replacingNode) {
         if (argv.w) {
           fs.writeFile(source, result.css, (err) => {
             if (err) throw err;
-            log(`Wrote changes to ${source}.`);
+            log(chalk`✨ {green ${source}}.`);
           });
         } else {
           log(result.css);
