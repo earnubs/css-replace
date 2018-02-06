@@ -26,6 +26,18 @@ const processor = parser();
 const source = path.resolve(argv._[0]);
 const [fromType, fromValue] = argv.from ? splitOption(argv.from) : [];
 const [toType, toValue] = argv.to ? splitOption(argv.to) : [];
+const validTypes = new Set(['tag', 'class', 'id']);
+
+if (!validTypes.has(fromType)) {
+  console.error('option --from has invalid type, should be one of [id, class, tag]');
+  process.exit(1);
+}
+
+if (!validTypes.has(toType)) {
+  console.error('option --to has invalid type, should be one of [id, class, tag]');
+  process.exit(1);
+}
+
 
 if (!fs.existsSync(source)) {
   log(`File at ${source} does not exist!`);
@@ -65,10 +77,12 @@ const search = postcss.plugin('postcss-search-and-replace', (options) => {
   };
 });
 
-let processOptions = {};
+let processOptions = {
+  from: source
+};
 
 if (argv.scss) {
-  processOptions = { parser: syntax };
+  processOptions.parser = syntax;
 }
 
 if (replacingNode) {
@@ -83,9 +97,10 @@ if (replacingNode) {
         if (argv.w) {
           fs.writeFile(source, result.css, (err) => {
             if (err) throw err;
-            log(chalk`✨ {green ${source}}.`);
+            log(chalk`✨ Writing {green ${source}}.`);
           });
         } else {
+          log(chalk`{blue ${source}}`);
           log(result.css);
         }
       })
