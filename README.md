@@ -18,5 +18,5 @@ Types are `id`, `tag` and `class`.
 # Usage example with ripgrep (https://github.com/BurntSushi/ripgrep)
 
 ```
-rg button -l | xargs -I % ./index.js -s --from 'ta:button' --to 'class:button' %
+rg button -l | xargs -I % ./index.js -s --from 'tag:button' --to 'class:button' %
 ```
